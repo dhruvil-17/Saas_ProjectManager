@@ -1,0 +1,423 @@
+# 📘 SaaS Task Manager — Full Product & System Documentation
+
+---
+
+# 🧠 1. Product Overview
+
+## 📌 Product Name
+
+**SaaS Task Manager (Multi-tenant)**
+
+## 🎯 Goal
+
+A production-grade full-stack application where teams can:
+
+* Create workspaces
+* Collaborate on tasks
+* Manage projects
+* Receive notifications
+* Upgrade via subscription plans
+
+---
+
+# 🧩 2. Core Concept
+
+This is a **multi-tenant SaaS platform**.
+
+👉 Key idea:
+
+* One app
+* Multiple organizations (workspaces)
+* Each workspace has its own users, projects, and tasks
+
+---
+
+# 🏗️ 3. Tech Stack
+
+## 🖥️ Frontend
+
+* Next.js (App Router)
+* TypeScript
+* Tailwind CSS
+* TanStack Query (server state management)
+* Axios (API client)
+
+---
+
+## ⚙️ Backend
+
+* Node.js + Express
+* TypeScript
+* REST API architecture
+
+---
+
+## 🗄️ Database
+
+* PostgreSQL
+* Drizzle ORM
+
+---
+
+## ⚡ Infrastructure
+
+* Redis → caching, rate limiting, session storage
+* RabbitMQ → async job processing (emails, notifications)
+* Stripe → subscription billing
+* Node-cron → scheduled jobs
+
+---
+
+## 🐳 DevOps (later stage)
+
+* Docker
+* Docker Compose
+
+---
+
+# 🧱 4. System Architecture
+
+```
+Frontend (Next.js)
+   ↓
+Backend API (Express)
+   ↓
+Modules:
+  - Auth
+  - Workspace
+  - Project
+  - Task
+  - Billing
+  - Notification
+   ↓
+Infrastructure:
+  - PostgreSQL
+  - Redis
+  - RabbitMQ
+```
+
+---
+
+# 🧠 5. Architectural Pattern
+
+## Layered Architecture:
+
+```
+Route → Controller → Service → Repository → Database
+```
+
+### Responsibilities:
+
+* **Route** → defines endpoint
+* **Controller** → handles request/response
+* **Service** → business logic
+* **Repository** → database queries
+
+---
+
+# 🗂️ 6. Backend Folder Structure
+
+```
+src/
+  modules/
+    auth/
+    user/
+    workspace/
+    project/
+    task/
+    billing/
+    notification/
+
+  db/
+    schema/
+    migrations/
+
+  repositories/
+  middleware/
+  services/
+  utils/
+  config/
+
+  app.ts
+  server.ts
+```
+
+---
+
+# 🧩 7. Core Entities
+
+* User
+* Workspace
+* WorkspaceMember (role-based)
+* Project
+* Task
+* Subscription
+
+---
+
+# 🔐 8. Authentication System
+
+## Flow:
+
+1. User signs up / logs in
+2. Server issues:
+
+   * Access Token (short-lived)
+   * Refresh Token (stored securely)
+3. Refresh token used to generate new access tokens
+
+## Security:
+
+* Refresh token stored in HTTP-only cookies
+* Access token sent in headers
+* Redis used for session tracking
+
+---
+
+# 🏢 9. Workspace System (Multi-Tenancy)
+
+## Features:
+
+* Create workspace
+* Invite users
+* Join workspace via invite
+* Switch between workspaces
+
+## Roles:
+
+* Admin → full control
+* Member → limited access
+
+---
+
+# 📋 10. Project & Task System
+
+## Project:
+
+* Created inside a workspace
+* Groups tasks
+
+## Task:
+
+* Belongs to a project
+* Assigned to a user
+* Has status:
+
+  * TODO
+  * IN_PROGRESS
+  * DONE
+
+---
+
+# 🔔 11. Notification System
+
+## Events:
+
+* User invited
+* Task assigned
+
+## Flow:
+
+1. Event triggered
+2. Message sent to RabbitMQ
+3. Worker processes message
+4. Email sent to user
+
+---
+
+# 💳 12. Billing System
+
+## Features:
+
+* Subscription plans (Free / Paid)
+* Stripe checkout integration
+* Webhook handling
+
+## Flow:
+
+1. User upgrades plan
+2. Stripe processes payment
+3. Webhook updates subscription status
+4. Features unlocked
+
+---
+
+# ⚡ 13. System Features
+
+## Redis Usage:
+
+* Caching (task lists)
+* Rate limiting
+* Session storage
+
+---
+
+## RabbitMQ Usage:
+
+* Email processing
+* Background jobs
+
+---
+
+## Cron Jobs:
+
+* Task reminders
+* Scheduled notifications
+
+---
+
+# 🔄 14. Core Workflows
+
+---
+
+## 🔐 Auth Flow
+
+```
+User logs in
+→ Tokens issued
+→ Protected routes accessed
+```
+
+---
+
+## 🏢 Workspace Flow
+
+```
+Create workspace
+→ Invite users
+→ Users join
+```
+
+---
+
+## 📋 Task Flow
+
+```
+Create task
+→ Assign user
+→ Update status
+```
+
+---
+
+## 🔔 Notification Flow
+
+```
+Event triggered
+→ Queue
+→ Worker processes
+→ Email sent
+```
+
+---
+
+## 💳 Billing Flow
+
+```
+Upgrade plan
+→ Stripe checkout
+→ Webhook updates DB
+```
+
+---
+
+# 🧑‍💻 15. User Journey
+
+1. User signs up
+2. Creates workspace
+3. Invites team
+4. Creates projects
+5. Manages tasks
+6. Receives notifications
+7. Upgrades plan
+
+---
+
+# ⚙️ 16. Non-Functional Requirements
+
+## Performance:
+
+* Redis caching
+* Pagination
+
+## Security:
+
+* JWT auth
+* Rate limiting
+* Input validation
+
+## Reliability:
+
+* Retry failed jobs
+* Idempotent webhooks
+
+## Scalability:
+
+* Stateless backend
+* Queue-based processing
+
+---
+
+# 🖥️ 17. Frontend Features
+
+* Auth pages (login/signup)
+* Dashboard
+* Workspace switcher
+* Task board (Kanban)
+* Notifications UI
+* Billing page
+
+---
+
+# 🚀 18. Development Phases
+
+## Phase 1:
+
+* Auth system
+* Base backend setup
+
+## Phase 2:
+
+* Workspace system
+
+## Phase 3:
+
+* Task management
+
+## Phase 4:
+
+* RabbitMQ integration
+
+## Phase 5:
+
+* Redis (caching + rate limiting)
+
+## Phase 6:
+
+* Stripe billing
+
+## Phase 7:
+
+* Frontend polish
+
+---
+
+# 🔥 19. Key Highlights (Why this is Production-Level)
+
+* Multi-tenant architecture
+* Async job processing
+* Real billing system
+* Scalable backend design
+* Clean architecture
+
+---
+
+# 🎯 20. Objective
+
+Build a **real-world SaaS backend system** with:
+
+* Strong architecture
+* Scalable design
+* Production-level workflows
+
+---
