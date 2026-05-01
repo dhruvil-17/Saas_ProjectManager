@@ -44,3 +44,5 @@ export const tasks = pgTable("tasks", {
         statusIdx: index("task_status_idx").on(table.status),
     }
 })
+
+export type TaskStatus = (typeof taskStatusEnum.enumValues)[number];

@@ -1,4 +1,5 @@
 import pkg from "pg"
+import * as schema from "./schema/index.ts";
 import {drizzle} from "drizzle-orm/node-postgres";
 import {env} from "../config/env.ts"
 
@@ -9,4 +10,4 @@ const pool = new Pool({
     connectionString : env.DATABASE_URL
 })
 
-export const db = drizzle(pool);
+export const db = drizzle(pool , {schema});
